@@ -16,24 +16,21 @@
         </md-toolbar>
 
         <md-list>
-          <md-list-item>
-            <md-icon>keyboard</md-icon>
+          <md-list-item
+            v-for="tab in tabs"
+            :key="tab.name"
+            @click="currentTab = tab.name"
+          >
+            <md-icon>{{ tab.icon }}</md-icon>
             <span class="md-list-item-text">
-              Расчет
-            </span>
-          </md-list-item>
-
-          <md-list-item>
-            <md-icon>history</md-icon>
-            <span class="md-list-item-text">
-              История
+              {{ tab.title }}
             </span>
           </md-list-item>
         </md-list>
       </md-app-drawer>
 
       <md-app-content>
-        foobar
+        <component :is="currentTab" />
       </md-app-content>
     </md-app>
   </div>
@@ -56,16 +53,30 @@ import Vue from 'vue';
 import {
   MdApp, MdToolbar, MdDrawer, MdList, MdIcon, MdContent
 } from 'vue-material/dist/components';
+import Calc from './Calc.vue';
+import History from './History.vue';
 
 [MdApp, MdToolbar, MdDrawer, MdList, MdIcon, MdContent].map(plugin => Vue.use(plugin));
 
+const tabs = [
+  { name: 'Calc', icon: 'keyboard', title: 'Расчет' },
+  { name: 'History', icon: 'history', title: 'История' }
+];
+
 export default {
   name: 'Layout',
+  components: { Calc, History },
   props: {
     title: {
       type: String,
       required: true
     }
+  },
+  data() {
+    return {
+      tabs,
+      currentTab: tabs[0].name
+    };
   }
 };
 </script>
