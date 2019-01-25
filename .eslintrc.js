@@ -3,11 +3,16 @@ module.exports = {
   env: {
     node: true,
   },
+  'plugins': [
+    'import',
+    'vue'
+  ],
   extends: [
-    'plugin:vue/essential',
+    'plugin:vue/recommended',
     '@vue/airbnb',
   ],
   rules: {
+    'comma-dangle': ['error', 'never'],
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   },
