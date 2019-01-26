@@ -6,6 +6,10 @@ Vue.use(MdButton);
 
 export default {
   props: {
+    name: {
+      type: String,
+      default: null
+    },
     colSpan: {
       type: Number,
       default: 1
@@ -27,7 +31,10 @@ export default {
 
 <template>
   <div :class="`md-layout-item md-size-${colSpan * 25}`">
-    <md-button :class="`md-raised md-size-50 ${className}`">
+    <md-button
+      :class="`md-raised md-size-50 ${className}`"
+      @click="$emit('click', name)"
+    >
       <slot />
     </md-button>
   </div>
@@ -38,5 +45,6 @@ export default {
 
   .md-button {
     width: calc(100% - #{$buttonMargin} * 2);
+    font-size: 1.5em;
   }
 </style>

@@ -1,6 +1,11 @@
 <script>
 import CalcPanelKeyboardButton from './CalcPanelKeyboardButton.vue';
 
+export const FRACT = '/';
+export const MULT = '*';
+export const MINUS = '-';
+export const PLUS = '+';
+
 function* opSeq() {
   let row = 1;
 
@@ -13,7 +18,7 @@ function* opSeq() {
         break;
       }
 
-      yield { title: num };
+      yield { name: num.toString(), title: num };
     }
 
     row += 1;
@@ -23,18 +28,18 @@ function* opSeq() {
   const primary = { color: 'primary' };
 
   yield { title: 'AC', color: 'accent', ...accent };
-  yield { title: '\u207A', ...accent };
+  yield { title: '+/-', ...accent };
   yield { title: '%', ...accent };
-  yield { title: '\u00F7', ...primary };
+  yield { name: FRACT, title: '\u00F7', ...primary };
 
   yield* getNumbers();
-  yield { title: '\u00D7', ...primary };
+  yield { name: MULT, title: '\u00D7', ...primary };
 
   yield* getNumbers();
-  yield { title: '\uFF0D', ...primary };
+  yield { name: MINUS, title: '\uFF0D', ...primary };
 
   yield* getNumbers();
-  yield { title: '\uFF0B', ...primary };
+  yield { name: PLUS, title: '\uFF0B', ...primary };
 
   yield* getNumbers();
   yield { title: ',' };
@@ -43,6 +48,12 @@ function* opSeq() {
 
 export default {
   components: { CalcPanelKeyboardButton },
+  props: {
+    onButtonClick: {
+      type: Function,
+      required: true
+    }
+  },
   computed: {
     buttons: () => [...opSeq()]
   }
@@ -60,8 +71,10 @@ export default {
         <calc-panel-keyboard-button
           v-for="button of buttons.slice((row-1)*4, row*4)"
           :key="button.title"
+          :name="button.name"
           :col-span="button.colSpan"
           :color="button.color"
+          @click="onButtonClick"
         >
           {{ button.title }}
         </calc-panel-keyboard-button>
