@@ -1,21 +1,19 @@
-<template>
-  <div id="app">
-    <Layout :title="$root.title" />
-  </div>
-</template>
-
 <script>
 import 'vue-material/dist/vue-material.min.css';
-import 'vue-material/dist/theme/default.css'
-import Layout from './components/Layout.vue';
+import 'vue-material/dist/theme/default.css';
+import TheLayout from './components/TheLayout.vue';
 
 export default {
-  name: 'app',
-  components: {
-    Layout
-  }
+  name: 'App',
+  components: { TheLayout }
 };
 </script>
+
+<template>
+  <div id="app">
+    <the-layout :title="$root.title" />
+  </div>
+</template>
 
 <style lang="scss">
   @import "~vue-material/dist/theme/engine";

@@ -1,30 +1,5 @@
-<template>
-  <div class="keyboard">
-    <div>
-      <div
-        v-for="row in 5"
-        class="md-layout"
-      >
-        <calc-button
-          v-for="button of buttons.slice((row-1)*4, row*4)"
-          :key="button.title"
-          :col-span="button.colSpan"
-          :color="button.color"
-        >
-          {{ button.title }}
-        </calc-button>
-      </div>
-    </div>
-  </div>
-</template>
-
-<style lang="scss" scoped>
-  .keyboard {
-  }
-</style>
-
 <script>
-import CalcButton from './Button.vue';
+import CalcPanelKeyboardButton from './CalcPanelKeyboardButton.vue';
 
 function* opSeq() {
   let row = 1;
@@ -67,10 +42,30 @@ function* opSeq() {
 }
 
 export default {
-  name: 'Keyboard',
-  components: { CalcButton },
+  components: { CalcPanelKeyboardButton },
   computed: {
     buttons: () => [...opSeq()]
   }
 };
 </script>
+
+<template>
+  <div>
+    <div>
+      <div
+        v-for="row in 5"
+        :key="row"
+        class="md-layout"
+      >
+        <calc-panel-keyboard-button
+          v-for="button of buttons.slice((row-1)*4, row*4)"
+          :key="button.title"
+          :col-span="button.colSpan"
+          :color="button.color"
+        >
+          {{ button.title }}
+        </calc-panel-keyboard-button>
+      </div>
+    </div>
+  </div>
+</template>

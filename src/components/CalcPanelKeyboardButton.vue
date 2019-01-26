@@ -5,14 +5,14 @@ import { MdButton } from 'vue-material/dist/components';
 Vue.use(MdButton);
 
 export default {
-  name: 'CalcButton',
   props: {
     colSpan: {
       type: Number,
       default: 1
     },
     color: {
-      type: String
+      type: String,
+      default: null
     }
   },
   computed: {
@@ -34,15 +34,9 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-  @import "~vue-material/dist/theme/engine";
-
   $buttonMargin: 8px;
 
   .md-button {
     width: calc(100% - #{$buttonMargin} * 2);
-
-    .button-gray {
-      background-color: #000;
-    }
   }
 </style>
