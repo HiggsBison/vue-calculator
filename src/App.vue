@@ -18,8 +18,17 @@ export default {
 </script>
 
 <style lang="scss">
+  @import "~vue-material/dist/theme/engine";
+
+  @include md-register-theme("default", (
+    primary: md-get-palette-color(orange, A200),
+    accent: md-get-palette-color(gray, 300)
+  ));
+
+  @import "~vue-material/dist/theme/all";
+
   $appWidth: 600px;
-  $appHeight: 300px;
+  $appHeight: 400px;
 
   #app {
     width: $appWidth;

@@ -38,12 +38,11 @@
 
 <style lang="scss" scoped>
   .md-app {
-    max-height: 400px;
     border: 1px solid rgba(#000, .12);
   }
 
    .md-drawer {
-     width: 230px;
+     width: 150px;
      max-width: calc(100vw - 125px);
    }
 </style>
@@ -53,7 +52,7 @@ import Vue from 'vue';
 import {
   MdApp, MdToolbar, MdDrawer, MdList, MdIcon, MdContent
 } from 'vue-material/dist/components';
-import Calc from './Calc.vue';
+import Calc from './Calc';
 import History from './History.vue';
 
 [MdApp, MdToolbar, MdDrawer, MdList, MdIcon, MdContent].map(plugin => Vue.use(plugin));
