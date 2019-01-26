@@ -4,7 +4,7 @@ import {
   MdField
 } from 'vue-material/dist/components';
 import CalcPanelKeyboard, {
-  FRACT, MULT, MINUS, PLUS
+  FRACT, MULT, MINUS, PLUS, EQUAL
 } from './CalcPanelKeyboard.vue';
 
 Vue.use(MdField);
@@ -33,6 +33,34 @@ export default {
       operands[cur] = (+operands[cur] || '') + digit;
       this.operands = [...operands];
     },
+    calculate() {
+      const [l, r] = this.operands.map(Number.parseFloat);
+      let value;
+
+      // we could use eval() here, but it's not so interesting )
+      switch (this.operator) {
+        case FRACT:
+          value = l / r;
+          break;
+        case MULT:
+          value = l * r;
+          break;
+
+        case MINUS:
+          value = l - r;
+          break;
+
+        case PLUS:
+          value = l + r;
+          break;
+
+        default:
+          return;
+      }
+
+      this.operands = [value];
+      this.operator = null;
+    },
     onButtonClick(name) {
       switch (name) {
         case FRACT:
@@ -40,6 +68,10 @@ export default {
         case MINUS:
         case PLUS:
           this.operator = name;
+
+          break;
+        case EQUAL:
+          this.calculate();
 
           break;
 

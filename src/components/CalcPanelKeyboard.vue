@@ -5,6 +5,7 @@ export const FRACT = '/';
 export const MULT = '*';
 export const MINUS = '-';
 export const PLUS = '+';
+export const EQUAL = '=';
 
 function* opSeq() {
   let row = 1;
@@ -43,7 +44,7 @@ function* opSeq() {
 
   yield* getNumbers();
   yield { title: ',' };
-  yield { title: '\uFF1D', ...primary };
+  yield { name: EQUAL, title: '\uFF1D', ...primary };
 }
 
 export default {
