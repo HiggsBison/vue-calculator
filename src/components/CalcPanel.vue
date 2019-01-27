@@ -4,7 +4,7 @@ import {
   MdField
 } from 'vue-material/dist/components';
 import CalcPanelKeyboard, {
-  FRACT, MULT, MINUS, PLUS, EQUAL
+  CLEAR, SIGN, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
 } from './CalcPanelKeyboard.vue';
 
 Vue.use(MdField);
@@ -12,34 +12,51 @@ Vue.use(MdField);
 export default {
   components: { CalcPanelKeyboard },
   data: () => ({
-    operands: ['0'],
-    operator: null
+    operands: [],
+    operator: null,
+    value: 0,
+    needChangeValue: true,
+    isFraction: false,
+    displayValue: '0'
   }),
-  computed: {
-    displayValue: {
-      get() {
-        return this.operands.slice(-1)[0];
-      },
-      set() {
-        console.log('setter');
+  watch: {
+    value(value) {
+      this.displayValue = value.toLocaleString('ru-RU', { maximumFractionDigits: 10 });
+
+      if (!this.needChangeValue) {
+        this.needChangeValue = true;
+
+        return;
       }
+
+      this.setOperand(value);
     }
   },
   methods: {
-    addDigit(digit) {
-      const { operands } = this;
-      const cur = this.operator ? 1 : 0;
+    setOperand(value) {
+      const { operator, operands } = this;
+      const cur = operator ? 1 : 0;
 
-      operands[cur] = (+operands[cur] || '') + digit;
-      this.operands = [...operands];
+      operands[cur] = value;
+    },
+    addDigit(digit) {
+      const { operator, operands } = this;
+      const operand = operands[operator ? 1 : 0] || '';
+      const value = parseFloat(`${operand}${this.isFraction ? '.' : ''}${digit}`, 10);
+
+      console.log({ value });
+
+      this.setOperand(value);
+      this.value = value;
+      this.isFraction = false;
     },
     calculate() {
-      const [l, r] = this.operands.map(Number.parseFloat);
+      const [l, r] = this.operands;
       let value;
 
       // we could use eval() here, but it's not so interesting )
       switch (this.operator) {
-        case FRACT:
+        case DIVID:
           value = l / r;
           break;
         case MULT:
@@ -60,18 +77,38 @@ export default {
 
       this.operands = [value];
       this.operator = null;
+      this.value = value;
+      this.isFraction = false;
     },
     onButtonClick(name) {
+      this.needChangeValue = false;
+
       switch (name) {
+        case CLEAR:
+          this.operands = [];
+          this.operator = null;
+          this.value = 0;
+
+          break;
+        case SIGN:
+          this.needChangeValue = true;
+          this.value *= -1;
+
+          break;
+
         case FRACT:
+          if (Number.isInteger(this.value)) this.isFraction = true;
+
+          break;
+
+        case DIVID:
         case MULT:
         case MINUS:
         case PLUS:
-          this.operator = name;
-
-          break;
         case EQUAL:
-          this.calculate();
+          if (this.operands.length === 2) this.calculate();
+
+          if (name !== EQUAL) this.operator = name;
 
           break;
 

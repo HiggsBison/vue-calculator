@@ -1,51 +1,15 @@
 <script>
 import CalcPanelKeyboardButton from './CalcPanelKeyboardButton.vue';
 
-export const FRACT = '/';
+export const SIGN = '+/-';
+export const CLEAR = 'AC';
+export const PERC = '%';
+export const DIVID = '/';
 export const MULT = '*';
 export const MINUS = '-';
 export const PLUS = '+';
 export const EQUAL = '=';
-
-function* opSeq() {
-  let row = 1;
-
-  function* getNumbers() {
-    for (let i = 0; i <= 2; i += 1) {
-      const num = 10 - row * 3 + i;
-
-      if (num < 0) {
-        yield { title: 0, colSpan: 2 };
-        break;
-      }
-
-      yield { name: num.toString(), title: num };
-    }
-
-    row += 1;
-  }
-
-  const accent = { color: 'accent' };
-  const primary = { color: 'primary' };
-
-  yield { title: 'AC', color: 'accent', ...accent };
-  yield { title: '+/-', ...accent };
-  yield { title: '%', ...accent };
-  yield { name: FRACT, title: '\u00F7', ...primary };
-
-  yield* getNumbers();
-  yield { name: MULT, title: '\u00D7', ...primary };
-
-  yield* getNumbers();
-  yield { name: MINUS, title: '\uFF0D', ...primary };
-
-  yield* getNumbers();
-  yield { name: PLUS, title: '\uFF0B', ...primary };
-
-  yield* getNumbers();
-  yield { title: ',' };
-  yield { name: EQUAL, title: '\uFF1D', ...primary };
-}
+export const FRACT = ',';
 
 export default {
   components: { CalcPanelKeyboardButton },
@@ -55,8 +19,52 @@ export default {
       required: true
     }
   },
+  data: () => ({
+    row: 1
+  }),
   computed: {
-    buttons: () => [...opSeq()]
+    buttons() {
+      return [...this.opSeq()];
+    }
+  },
+  methods: {
+    * numSeq() {
+      for (let i = 0; i <= 2; i += 1) {
+        const num = 10 - this.row * 3 + i;
+
+        if (num < 0) {
+          yield { name: '0', colSpan: 2 };
+          break;
+        }
+
+        yield { name: num.toString() };
+      }
+
+      this.row += 1;
+    },
+    * opSeq() {
+      const { numSeq } = this;
+      const accent = { color: 'accent' };
+      const primary = { color: 'primary' };
+
+      yield { name: CLEAR, ...accent };
+      yield { name: SIGN, ...accent };
+      yield { name: PERC, ...accent };
+      yield { name: DIVID, title: '\u00F7', ...primary };
+
+      yield* numSeq();
+      yield { name: MULT, title: '\u00D7', ...primary };
+
+      yield* numSeq();
+      yield { name: MINUS, title: '\uFF0D', ...primary };
+
+      yield* numSeq();
+      yield { name: PLUS, title: '\uFF0B', ...primary };
+
+      yield* numSeq();
+      yield { name: FRACT };
+      yield { name: EQUAL, title: '\uFF1D', ...primary };
+    }
   }
 };
 </script>
@@ -64,20 +72,20 @@ export default {
 <template>
   <div>
     <div>
+      <!-- iterate over 5 rows -->
       <div
         v-for="row in 5"
         :key="row"
         class="md-layout"
       >
+        <!-- iterate over row buttons -->
         <calc-panel-keyboard-button
           v-for="button of buttons.slice((row-1)*4, row*4)"
-          :key="button.title"
-          :name="button.name"
-          :col-span="button.colSpan"
-          :color="button.color"
+          :key="button.name"
+          v-bind="button"
           @click="onButtonClick"
         >
-          {{ button.title }}
+          {{ button.title || button.name }}
         </calc-panel-keyboard-button>
       </div>
     </div>
