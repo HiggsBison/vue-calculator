@@ -1,15 +1,15 @@
 <script>
 import CalcPanelKeyboardButton from './CalcPanelKeyboardButton.vue';
 
-export const SIGN = '+/-';
 export const CLEAR = 'AC';
+export const SIGN = '+/-';
 export const PERC = '%';
-export const DIVID = '/';
-export const MULT = '*';
-export const MINUS = '-';
-export const PLUS = '+';
-export const EQUAL = '=';
+export const DIVID = '\u00F7';
+export const MULT = '\u00D7';
+export const MINUS = '\uFF0D';
+export const PLUS = '\uFF0B';
 export const FRACT = ',';
+export const EQUAL = '\uFF1D';
 
 export default {
   components: { CalcPanelKeyboardButton },
@@ -20,7 +20,7 @@ export default {
     }
   },
   data: () => ({
-    row: 1
+    row: 3
   }),
   computed: {
     buttons() {
@@ -28,9 +28,12 @@ export default {
     }
   },
   methods: {
+    /**
+     * get numeric button sequence row by row
+     */
     * numSeq() {
-      for (let i = 0; i <= 2; i += 1) {
-        const num = 10 - this.row * 3 + i;
+      for (let i = 3; i; i -= 1) {
+        const num = this.row * 3 - i + 1;
 
         if (num < 0) {
           yield { name: '0', colSpan: 2 };
@@ -40,8 +43,11 @@ export default {
         yield { name: num.toString() };
       }
 
-      this.row += 1;
+      this.row -= 1;
     },
+    /**
+     * get buttons sequence from left to right, from top to bottom
+     */
     * opSeq() {
       const { numSeq } = this;
       const accent = { color: 'accent' };
@@ -50,20 +56,16 @@ export default {
       yield { name: CLEAR, ...accent };
       yield { name: SIGN, ...accent };
       yield { name: PERC, ...accent };
-      yield { name: DIVID, title: '\u00F7', ...primary };
-
+      yield { name: DIVID, ...primary };
       yield* numSeq();
-      yield { name: MULT, title: '\u00D7', ...primary };
-
+      yield { name: MULT, ...primary };
       yield* numSeq();
-      yield { name: MINUS, title: '\uFF0D', ...primary };
-
+      yield { name: MINUS, ...primary };
       yield* numSeq();
-      yield { name: PLUS, title: '\uFF0B', ...primary };
-
+      yield { name: PLUS, ...primary };
       yield* numSeq();
       yield { name: FRACT };
-      yield { name: EQUAL, title: '\uFF1D', ...primary };
+      yield { name: EQUAL, ...primary };
     }
   }
 };
@@ -85,7 +87,7 @@ export default {
           v-bind="button"
           @click="onButtonClick"
         >
-          {{ button.title || button.name }}
+          {{ button.name }}
         </calc-panel-keyboard-button>
       </div>
     </div>

@@ -4,7 +4,7 @@ import {
   MdField
 } from 'vue-material/dist/components';
 import CalcPanelKeyboard, {
-  CLEAR, SIGN, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
+  CLEAR, SIGN, PERC, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
 } from './CalcPanelKeyboard.vue';
 
 Vue.use(MdField);
@@ -17,58 +17,57 @@ export default {
     value: 0,
     needChangeValue: true,
     isFraction: false,
+    isPercent: false,
     displayValue: '0'
   }),
   watch: {
     value(value) {
       this.displayValue = value.toLocaleString('ru-RU', { maximumFractionDigits: 10 });
-
+    },
+    displayValue(value) {
       if (!this.needChangeValue) {
         this.needChangeValue = true;
 
         return;
       }
 
-      this.setOperand(value);
+      this.setValue(value.replace(/[^\d,.]/g, ''));
     }
   },
   methods: {
-    setOperand(value) {
+    setValue(value) {
       const { operator, operands } = this;
       const cur = operator ? 1 : 0;
+      const floatValue = parseFloat(value);
 
-      operands[cur] = value;
+      operands[cur] = floatValue;
+      this.value = floatValue;
     },
     addDigit(digit) {
-      const { operator, operands } = this;
+      const { operator, operands, isFraction } = this;
       const operand = operands[operator ? 1 : 0] || '';
-      const value = parseFloat(`${operand}${this.isFraction ? '.' : ''}${digit}`, 10);
+      const value = `${operand}${isFraction ? '.' : ''}${digit}`;
 
-      console.log({ value });
-
-      this.setOperand(value);
-      this.value = value;
+      this.setValue(value);
       this.isFraction = false;
     },
     calculate() {
-      const [l, r] = this.operands;
+      const { operator, operands: [l, r], isPercent } = this;
       let value;
 
       // we could use eval() here, but it's not so interesting )
-      switch (this.operator) {
+      switch (operator) {
         case DIVID:
-          value = l / r;
-          break;
-        case MULT:
-          value = l * r;
+          value = l / (isPercent ? 1 / 100 * r : r);
           break;
 
-        case MINUS:
-          value = l - r;
+        case MULT:
+          value = (isPercent ? l / 100 : l) * r;
           break;
 
         case PLUS:
-          value = l + r;
+        case MINUS:
+          value = l + (operator === PLUS ? r : -r) * (isPercent ? l / 100 : 1);
           break;
 
         default:
@@ -98,6 +97,11 @@ export default {
 
         case FRACT:
           if (Number.isInteger(this.value)) this.isFraction = true;
+
+          break;
+
+        case PERC:
+          this.isPercent = true;
 
           break;
 
