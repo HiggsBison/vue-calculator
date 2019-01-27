@@ -1,54 +1,35 @@
 <script>
-import Vue from 'vue';
-import {
-  MdField
-} from 'vue-material/dist/components';
+import CalcPanelDisplay from './CalcPanelDisplay.vue';
 import CalcPanelKeyboard, {
   CLEAR, SIGN, PERC, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
 } from './CalcPanelKeyboard.vue';
 
-Vue.use(MdField);
-
 export default {
-  components: { CalcPanelKeyboard },
+  components: { CalcPanelDisplay, CalcPanelKeyboard },
   data: () => ({
     operands: [],
     operator: null,
     value: 0,
-    needChangeValue: true,
     isFraction: false,
-    isPercent: false,
-    displayValue: '0'
+    isPercent: false
   }),
-  watch: {
-    value(value) {
-      this.displayValue = value.toLocaleString('ru-RU', { maximumFractionDigits: 10 });
-    },
-    displayValue(value) {
-      if (!this.needChangeValue) {
-        this.needChangeValue = true;
-
-        return;
-      }
-
-      this.setValue(value.replace(/[^\d,.]/g, ''));
+  computed: {
+    displayValue() {
+      return this.value.toLocaleString('ru-RU', { maximumFractionDigits: 10 });
     }
   },
   methods: {
-    setValue(value) {
-      const { operator, operands } = this;
+    addDigit(digit) {
+      const { operator, operands, isFraction } = this;
       const cur = operator ? 1 : 0;
+      const operand = operands[cur] || '';
+      const value = `${operand}${isFraction ? '.' : ''}${digit}`;
+
       const floatValue = parseFloat(value);
 
       operands[cur] = floatValue;
-      this.value = floatValue;
-    },
-    addDigit(digit) {
-      const { operator, operands, isFraction } = this;
-      const operand = operands[operator ? 1 : 0] || '';
-      const value = `${operand}${isFraction ? '.' : ''}${digit}`;
 
-      this.setValue(value);
+      this.value = floatValue;
       this.isFraction = false;
     },
     calculate() {
@@ -80,7 +61,7 @@ export default {
       this.isFraction = false;
     },
     onButtonClick(name) {
-      this.needChangeValue = false;
+      console.log({ name });
 
       switch (name) {
         case CLEAR:
@@ -126,10 +107,10 @@ export default {
 
 <template>
   <div>
-    <md-field>
-      <md-input v-model="displayValue" />
-    </md-field>
-
+    <calc-panel-display
+      :value="displayValue"
+      :on-button-click="onButtonClick"
+    />
     <calc-panel-keyboard :on-button-click="onButtonClick" />
   </div>
 </template>

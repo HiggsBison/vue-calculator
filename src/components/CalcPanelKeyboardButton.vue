@@ -32,7 +32,7 @@ export default {
 <template>
   <div :class="`md-layout-item md-size-${colSpan * 25}`">
     <md-button
-      :class="`md-raised md-size-50 ${className}`"
+      :class="`md-raised ${className}`"
       @click="$emit('click', name)"
     >
       <slot />
