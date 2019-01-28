@@ -61,8 +61,6 @@ export default {
       this.isFraction = false;
     },
     onButtonClick(name) {
-      console.log({ name });
-
       switch (name) {
         case CLEAR:
           this.operands = [];
@@ -71,7 +69,6 @@ export default {
 
           break;
         case SIGN:
-          this.needChangeValue = true;
           this.value *= -1;
 
           break;
