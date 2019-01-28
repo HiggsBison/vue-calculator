@@ -28,10 +28,8 @@ Install all project dependencies
 yarn install
 ```
 
-Download the latest release from [official site](https://github.com/PostgREST/postgrest/releases/tag/v5.2.0)
-
 Install PostgREST
-
+Download the latest release from [official site](https://github.com/PostgREST/postgrest/releases/tag/v5.2.0)
 ```
 mkdir ./bin
 cd ./bin/
