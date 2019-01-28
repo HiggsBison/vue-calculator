@@ -1,15 +1,8 @@
 <script>
+import {
+  CLEAR, SIGN, PERC, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
+} from 'common/operators';
 import CalcPanelKeyboardButton from './CalcPanelKeyboardButton.vue';
-
-export const CLEAR = 'AC';
-export const SIGN = '+/-';
-export const PERC = '%';
-export const DIVID = '\u00F7';
-export const MULT = '\u00D7';
-export const MINUS = '\uFF0D';
-export const PLUS = '\uFF0B';
-export const FRACT = ',';
-export const EQUAL = '\uFF1D';
 
 export default {
   components: { CalcPanelKeyboardButton },

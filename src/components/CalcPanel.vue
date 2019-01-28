@@ -1,21 +1,33 @@
 <script>
 import CalcPanelDisplay from './CalcPanelDisplay.vue';
-import CalcPanelKeyboard, {
+import CalcPanelKeyboard from './CalcPanelKeyboard.vue';
+import {
   CLEAR, SIGN, PERC, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
-} from './CalcPanelKeyboard.vue';
+} from 'common/operators';
 
 export default {
   components: { CalcPanelDisplay, CalcPanelKeyboard },
+  props: {
+    value: {
+      type: String,
+      default: null
+    }
+  },
   data: () => ({
-    operands: [],
+    operands: [0],
     operator: null,
-    value: 0,
+    result: 0,
     isFraction: false,
     isPercent: false
   }),
   computed: {
-    displayValue() {
-      return this.value.toLocaleString('ru-RU', { maximumFractionDigits: 10 });
+    displayValue: {
+      get() {
+        return this.result.toLocaleString('ru-RU', { maximumFractionDigits: 10 });
+      },
+      set(value) {
+        this.result = value;
+      }
     }
   },
   methods: {
@@ -24,57 +36,49 @@ export default {
       const cur = operator ? 1 : 0;
       const operand = operands[cur] || '';
       const value = `${operand}${isFraction ? '.' : ''}${digit}`;
-
       const floatValue = parseFloat(value);
 
       operands[cur] = floatValue;
-
-      this.value = floatValue;
-      this.isFraction = false;
+      this.displayValue = floatValue;
     },
     calculate() {
       const { operator, operands: [l, r], isPercent } = this;
-      let value;
 
       // we could use eval() here, but it's not so interesting )
       switch (operator) {
+        case null:
+          return l;
+
         case DIVID:
-          value = l / (isPercent ? 1 / 100 * r : r);
-          break;
+          return l / (isPercent ? 1 / 100 * r : r);
 
         case MULT:
-          value = (isPercent ? l / 100 : l) * r;
-          break;
+          return (isPercent ? l / 100 : l) * r;
 
         case PLUS:
         case MINUS:
-          value = l + (operator === PLUS ? r : -r) * (isPercent ? l / 100 : 1);
-          break;
+          return l + (operator === PLUS ? r : -r) * (isPercent ? l / 100 : 1);
 
         default:
-          return;
+          throw new Error(`Unknown operator ${operator}`);
       }
-
-      this.operands = [value];
-      this.operator = null;
-      this.value = value;
-      this.isFraction = false;
     },
     onButtonClick(name) {
       switch (name) {
         case CLEAR:
           this.operands = [];
           this.operator = null;
-          this.value = 0;
+          this.displayValue = 0;
+          this.$emit('input', null);
 
           break;
         case SIGN:
-          this.value *= -1;
+          this.displayValue *= -1;
 
           break;
 
         case FRACT:
-          if (Number.isInteger(this.value)) this.isFraction = true;
+          if (Number.isInteger(this.result)) this.isFraction = true;
 
           break;
 
@@ -87,12 +91,18 @@ export default {
         case MULT:
         case MINUS:
         case PLUS:
-        case EQUAL:
-          if (this.operands.length === 2) this.calculate();
+        case EQUAL: {
+          const value = this.calculate();
 
-          if (name !== EQUAL) this.operator = name;
+          this.operands = [value];
+          this.operator = name === EQUAL ? null : name;
+          this.displayValue = value;
+          this.isFraction = false;
+
+          this.$emit('input', this.displayValue);
 
           break;
+        }
 
         default:
           this.addDigit(name);

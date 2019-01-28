@@ -19,4 +19,9 @@ module.exports = {
   parserOptions: {
     parser: 'babel-eslint',
   },
+  settings: {
+    'import/resolver': {
+      config: 'vue.config.js'
+    }
+  }
 };

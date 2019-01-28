@@ -30,7 +30,8 @@ export default {
           component: 'CalcHistory'
         }
       },
-      currentTab: 'panel'
+      currentTab: 'panel',
+      result: null
     };
   },
   computed: {
@@ -46,7 +47,7 @@ export default {
     <md-app>
       <md-app-toolbar class="md-primary">
         <span class="md-title">
-          {{ title }}
+          {{ result ? `Результат: ${result}` : 'Введите данные' }}
         </span>
       </md-app-toolbar>
 
@@ -73,7 +74,10 @@ export default {
       </md-app-drawer>
 
       <md-app-content>
-        <component :is="currentComponent" />
+        <component
+          :is="currentComponent"
+          v-model="result"
+        />
       </md-app-content>
     </md-app>
   </div>
@@ -84,8 +88,8 @@ export default {
     border: 1px solid rgba(#000, .12);
   }
 
-   .md-drawer {
-     width: 150px;
-     max-width: calc(100vw - 125px);
-   }
+  .md-drawer {
+    width: 150px;
+    max-width: calc(100vw - 125px);
+  }
 </style>

@@ -7,25 +7,10 @@ import {
 
 import {
   CLEAR, SIGN, PERC, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
-} from './CalcPanelKeyboard.vue';
+} from 'common/operators';
 
 Vue.use(MdField);
 Vue.directive('focus', { inserted: el => el.focus() });
-
-const keyMap = {
-  Delete: CLEAR,
-  Backspace: CLEAR,
-  '!': SIGN,
-  '%': PERC,
-  '/': DIVID,
-  '*': MULT,
-  '-': MINUS,
-  '+': PLUS,
-  ',': FRACT,
-  '.': FRACT,
-  '=': EQUAL,
-  Enter: EQUAL
-};
 
 export default {
   props: {
@@ -38,9 +23,26 @@ export default {
       required: true
     }
   },
+  data: () => ({
+    keyMap: {
+      Delete: CLEAR,
+      Backspace: CLEAR,
+      '!': SIGN,
+      '%': PERC,
+      '/': DIVID,
+      '*': MULT,
+      '-': MINUS,
+      '+': PLUS,
+      ',': FRACT,
+      '.': FRACT,
+      '=': EQUAL,
+      Enter: EQUAL
+    }
+  }),
   methods: {
     onInput(e) {
       const { key } = e;
+      const { keyMap } = this;
       let prevent = true;
 
       // numeric key pressed and key is not space
