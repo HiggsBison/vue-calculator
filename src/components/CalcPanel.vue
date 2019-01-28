@@ -101,6 +101,7 @@ export default {
           this.operator = isEqual ? null : name;
           this.displayValue = value;
           this.isFraction = false;
+          this.isPercent = false;
 
           if (operands.length > 1) {
             this.$emit('input', {

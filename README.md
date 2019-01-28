@@ -10,7 +10,8 @@ Simple calculator written with Vue.js and using PostgREST server for API calls
 * input by clicking virtual keyboard buttons
 * input by typing on input field
 * percentage calculation
-* sync operations history by REST API 
+* sync operations history by REST API
+* date and number formatting using locale
 
 ## Getting Started
 
@@ -22,19 +23,22 @@ Simple calculator written with Vue.js and using PostgREST server for API calls
 
 ### Installing
 
-Install all project dependencies
+#### Install all project dependencies
 
 ```
 yarn install
 ```
 
-Install PostgREST
+#### Install PostgREST
+
 Download the latest release from [official site](https://github.com/PostgREST/postgrest/releases/tag/v5.2.0)
 ```
 mkdir ./bin
 cd ./bin/
 tar xfJ postgrest-<version>-<platform>.tar.xz
 ```
+
+#### Create table structure
 
 Connect to your database as postgres user
 
@@ -65,7 +69,9 @@ GRANT USAGE, SELECT ON SEQUENCE api.history_id_seq TO web_anon;
 
 ```
 
-Run REST API server from project's directory
+#### Run app
+
+Start REST API server from project's directory
 ```
 ./bin/postgrest ./api.conf
 ``` 
