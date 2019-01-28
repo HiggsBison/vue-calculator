@@ -63,7 +63,7 @@ GRANT USAGE, SELECT ON SEQUENCE api.history_id_seq TO web_anon;
 
 ```
 
-Run REST Api server from project's directory
+Run REST API server from project's directory
 ```
 ./bin/postgrest ./api.conf
 ``` 
@@ -72,7 +72,7 @@ Start project
 ```
 yarn run serve
 ```
-
+Open [project URL](http://localhost:8080/) in your browser 
 
 ## Console commands
 
