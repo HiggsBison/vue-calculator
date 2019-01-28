@@ -1,9 +1,9 @@
 <script>
-import CalcPanelDisplay from './CalcPanelDisplay.vue';
-import CalcPanelKeyboard from './CalcPanelKeyboard.vue';
 import {
   CLEAR, SIGN, PERC, DIVID, MULT, MINUS, PLUS, FRACT, EQUAL
 } from 'common/operators';
+import CalcPanelDisplay from './CalcPanelDisplay.vue';
+import CalcPanelKeyboard from './CalcPanelKeyboard.vue';
 
 export default {
   components: { CalcPanelDisplay, CalcPanelKeyboard },
@@ -23,13 +23,14 @@ export default {
   computed: {
     displayValue: {
       get() {
-        return this.result.toLocaleString('ru-RU', { maximumFractionDigits: 10 });
+        return this.numberFormat.format(this.result);
       },
       set(value) {
         this.result = value;
       }
     }
   },
+  inject: ['numberFormat'],
   methods: {
     addDigit(digit) {
       const { operator, operands, isFraction } = this;

@@ -1,17 +1,36 @@
 <script>
+import { defaults } from 'axios';
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default.css';
 import TheLayout from './components/TheLayout.vue';
 
 export default {
-  name: 'App',
-  components: { TheLayout }
+  components: { TheLayout },
+  data() {
+    return process.env;
+  },
+  provide() {
+    const { VUE_APP_LOCALE: locale } = this;
+
+    return {
+      numberFormat: Intl.NumberFormat([locale], { maximumFractionDigits: 10 }),
+      dateFormat: Intl.DateTimeFormat([locale], {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    };
+  },
+  created() {
+    defaults.baseURL = this.VUE_APP_API_URL;
+  }
 };
 </script>
 
 <template>
   <div id="app">
-    <the-layout :title="$root.title" />
+    <the-layout :title="VUE_APP_TITLE" />
   </div>
 </template>
 
@@ -24,17 +43,4 @@ export default {
   ));
 
   @import "~vue-material/dist/theme/all";
-
-  $appWidth: 600px;
-  $appHeight: 400px;
-
-  #app {
-    width: $appWidth;
-    height: $appHeight;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    margin-left: -$appWidth/2;
-    margin-top: -$appHeight/2;
-  }
 </style>
