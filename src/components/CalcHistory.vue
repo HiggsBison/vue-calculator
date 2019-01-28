@@ -39,7 +39,7 @@ export default {
     value({
       operator, operands, isPercent, result
     }) {
-      if (result === null) return;
+      if (!operator) return;
 
       const [l, r] = operands.map(this.numberFormat.format);
       const expression = `${l} ${operator} ${r}${isPercent ? '%' : ''}`;

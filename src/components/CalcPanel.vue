@@ -32,6 +32,21 @@ export default {
   },
   inject: ['numberFormat'],
   methods: {
+    resetStateTo(value = 0) {
+      const { operator, operands, isPercent } = this;
+
+      this.operator = null;
+      this.operands = [value];
+      this.isFraction = false;
+      this.isPercent = false;
+      this.displayValue = value;
+
+      if (operands.length > 1) {
+        this.$emit('input', {
+          operator, operands, isPercent, result: value
+        });
+      }
+    },
     addDigit(digit) {
       const { operator, operands, isFraction } = this;
       const cur = operator ? 1 : 0;
@@ -67,14 +82,12 @@ export default {
     onButtonClick(name) {
       switch (name) {
         case CLEAR:
-          this.operands = [];
-          this.operator = null;
-          this.displayValue = 0;
-          this.$emit('input', { result: null });
+          this.resetStateTo(0);
 
           break;
         case SIGN:
           this.displayValue *= -1;
+          this.operands[this.operands.length - 1] *= -1;
 
           break;
 
@@ -93,20 +106,12 @@ export default {
         case MINUS:
         case PLUS:
         case EQUAL: {
-          const value = this.calculate();
-          const { operator, operands, isPercent } = this;
-          const isEqual = name === EQUAL;
+          this.resetStateTo(this.calculate());
 
-          this.operands = [isEqual ? 0 : value];
-          this.operator = isEqual ? null : name;
-          this.displayValue = value;
-          this.isFraction = false;
-          this.isPercent = false;
-
-          if (operands.length > 1) {
-            this.$emit('input', {
-              operator, operands, isPercent, result: value
-            });
+          if (name === EQUAL) {
+            this.operands = [0];
+          } else {
+            this.operator = name;
           }
 
           break;
