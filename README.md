@@ -1,9 +1,69 @@
-# calculator
+# vue-calculator
+Simple calculator written with Vue.js and using PostgREST server for API calls 
 
-## Project setup
+## Features
+
+* input by clicking virtual keyboard buttons
+* input by typing on input field
+* percentage calculation
+* sync operations history by REST API 
+
+## Getting Started
+
+### Prerequisites
+
+* Linux based OS
+* Postgres SQL server
+* yarn package manager
+
+### Installing
+
+Install all project dependencies
+
 ```
 yarn install
 ```
+Connect to your database as postgres user
+
+```
+env PGPASSWORD=YOUR_PASSWORD psql -U postgres
+```
+
+Execute following commands
+
+```
+CREATE USER calc PASSWORD 'calcpasswd';
+CREATE DATABASE calc OWNER = calc;
+CREATE ROLE web_anon NOLOGIN;
+GRANT web_anon TO calc;
+
+\c calc;
+
+CREATE SCHEMA api;
+CREATE TABLE api.history (
+  id SERIAL PRIMARY KEY,
+  expression VARCHAR(512),
+  result FLOAT,
+  created_at TIMESTAMPTZ DEFAULT(NOW())
+);
+GRANT ALL ON SCHEMA api TO web_anon;
+GRANT ALL ON api.history TO web_anon;
+GRANT USAGE, SELECT ON SEQUENCE api.history_id_seq TO web_anon;
+
+```
+
+Run REST Api server from project's directory
+```
+./bin/postgrest ./api.conf
+``` 
+
+Start project
+```
+yarn run serve
+```
+
+
+## Console commands
 
 ### Compiles and hot-reloads for development
 ```
@@ -15,35 +75,12 @@ yarn run serve
 yarn run build
 ```
 
-### Run your tests
-```
-yarn run test
-```
-
 ### Lints and fixes files
 ```
 yarn run lint
 ```
 
-### REST API integration 
+## Built With
 
-```
-CREATE DATABASE calc OWNER = calc;
-CREATE USER calc PASSWORD 'calcpasswd';
-CREATE ROLE web_anon NOLOGIN;
-GRANT web_anon TO calc;
-
-\c calc;
-
-CREATE SCHEMA api;
-CREATE ROLE web_anon NOLOGIN;
-CREATE TABLE api.history (
-  id SERIAL PRIMARY KEY,
-  expression VARCHAR(512),
-  result FLOAT,
-  created_at TIMESTAMPTZ
-);
-GRANT ALL ON SCHEMA api TO web_anon;
-GRANT SELECT ON api.history TO web_anon;
-GRANT USAGE, SELECT ON SEQUENCE api.todos_id_seq TO todo_user;
-```
+* [Vue.js](https://ru.vuejs.org) - The web framework used
+* [PostgREST](http://postgrest.org) - API server

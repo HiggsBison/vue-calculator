@@ -36,7 +36,9 @@ export default {
     }
   },
   watch: {
-    value({ operator, operands, isPercent, result }) {
+    value({
+      operator, operands, isPercent, result
+    }) {
       if (result === null) return;
 
       const [l, r] = operands.map(this.numberFormat.format);
