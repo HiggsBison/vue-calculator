@@ -1,6 +1,10 @@
 # vue-calculator
 Simple calculator written with Vue.js and using PostgREST server for API calls 
 
+![Panel](https://raw.githubusercontent.com/HiggsBison/vue-calculator/master/src/assets/screenshots/panel.png)
+![History](https://raw.githubusercontent.com/HiggsBison/vue-calculator/master/src/assets/screenshots/history.png)
+
+
 ## Features
 
 * input by clicking virtual keyboard buttons
@@ -95,6 +99,7 @@ yarn run lint
 
 * [Vue.js](https://ru.vuejs.org) - The web framework used
 * [PostgREST](http://postgrest.org) - API server
+* [Vue Material](https://vuematerial.io) - UI Material Design components
 
 ## Authors
 
