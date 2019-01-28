@@ -23,10 +23,21 @@ Install all project dependencies
 ```
 yarn install
 ```
+
+Download the latest release from [official site](https://github.com/PostgREST/postgrest/releases/tag/v5.2.0)
+
+Install PostgREST
+
+```
+mkdir ./bin
+cd ./bin/
+tar xfJ postgrest-<version>-<platform>.tar.xz
+```
+
 Connect to your database as postgres user
 
 ```
-env PGPASSWORD=YOUR_PASSWORD psql -U postgres
+env PGPASSWORD=<YOUR_PASSWORD> psql -U postgres
 ```
 
 Execute following commands
@@ -84,3 +95,7 @@ yarn run lint
 
 * [Vue.js](https://ru.vuejs.org) - The web framework used
 * [PostgREST](http://postgrest.org) - API server
+
+## Authors
+
+* **Buzykin Mikhail**
