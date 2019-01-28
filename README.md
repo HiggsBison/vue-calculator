@@ -27,7 +27,7 @@ yarn run lint
 
 ### REST API integration 
 
-
+```
 CREATE DATABASE calc OWNER = calc;
 CREATE USER calc PASSWORD 'calcpasswd';
 CREATE ROLE web_anon NOLOGIN;
@@ -43,5 +43,7 @@ CREATE TABLE api.history (
   result FLOAT,
   created_at TIMESTAMPTZ
 );
-GRANT USAGE ON SCHEMA api TO web_anon;
+GRANT ALL ON SCHEMA api TO web_anon;
 GRANT SELECT ON api.history TO web_anon;
+GRANT USAGE, SELECT ON SEQUENCE api.todos_id_seq TO todo_user;
+```

@@ -10,34 +10,31 @@ import CalcHistory from './CalcHistory.vue';
 
 export default {
   components: { CalcPanel, CalcHistory },
+  inject: ['numberFormat'],
   data() {
     return {
       tabs: {
         panel: {
           icon: 'keyboard',
-          title: 'Расчет',
-          component: 'CalcPanel'
+          title: 'Расчет'
         },
         history: {
           icon: 'history',
-          title: 'История',
-          component: 'CalcHistory'
+          title: 'История'
         }
       },
-      // currentTab: 'panel',
-      currentTab: 'history',
-      result: null
+      currentTab: 'panel',
+      operation: {}
     };
   },
   computed: {
-    currentComponent() {
-      return this.tabs[this.currentTab].component;
-    },
     title() {
-      const { result } = this;
+      const { operation: { result } } = this;
 
       if (this.currentTab === 'panel') {
-        return result ? `Результат: ${result}` : 'Введите данные';
+        return result
+          ? `Результат: ${this.numberFormat.format(result)}`
+          : 'Введите данные';
       }
 
       return 'История операций';
@@ -77,9 +74,13 @@ export default {
     </md-app-drawer>
 
     <md-app-content>
-      <component
-        :is="currentComponent"
-        v-model="result"
+      <calc-panel
+        v-show="currentTab === 'panel'"
+        v-model="operation"
+      />
+      <calc-history
+        v-show="currentTab === 'history'"
+        v-model="operation"
       />
     </md-app-content>
   </md-app>
@@ -87,7 +88,7 @@ export default {
 
 <style lang="scss" scoped>
   $appWidth: 600px;
-  $appHeight: 400px;
+  $appHeight: 420px;
 
   .md-app {
     border: 1px solid rgba(#000, .12);

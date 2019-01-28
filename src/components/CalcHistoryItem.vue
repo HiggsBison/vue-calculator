@@ -19,12 +19,12 @@ export default {
       return this.dateFormat.format(this.createdAt);
     },
     text() {
-      const { expression, result } = this;
+      const { expression, result, numberFormat: { format } } = this;
 
-      return `${expression} \uFF1D ${result}`;
+      return `${expression} \uFF1D ${format(result)}`;
     }
   },
-  inject: ['dateFormat']
+  inject: ['numberFormat', 'dateFormat']
 };
 </script>
 

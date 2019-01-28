@@ -9,8 +9,8 @@ export default {
   components: { CalcPanelDisplay, CalcPanelKeyboard },
   props: {
     value: {
-      type: String,
-      default: null
+      type: Object,
+      required: true
     }
   },
   data: () => ({
@@ -70,7 +70,7 @@ export default {
           this.operands = [];
           this.operator = null;
           this.displayValue = 0;
-          this.$emit('input', null);
+          this.$emit('input', { result: null });
 
           break;
         case SIGN:
@@ -94,13 +94,19 @@ export default {
         case PLUS:
         case EQUAL: {
           const value = this.calculate();
+          const { operator, operands, isPercent } = this;
+          const isEqual = name === EQUAL;
 
-          this.operands = [value];
-          this.operator = name === EQUAL ? null : name;
+          this.operands = [isEqual ? 0 : value];
+          this.operator = isEqual ? null : name;
           this.displayValue = value;
           this.isFraction = false;
 
-          this.$emit('input', this.displayValue);
+          if (operands.length > 1) {
+            this.$emit('input', {
+              operator, operands, isPercent, result: value
+            });
+          }
 
           break;
         }
